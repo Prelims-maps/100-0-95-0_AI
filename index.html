@@ -31,7 +31,7 @@
         #route1 {
             position: absolute;
             left: 30px;
-            top: calc(30% + 150px);
+            top: calc(13% + 150px);
             width: 20%;
             bottom: 5%;
             padding: 10px;
@@ -46,7 +46,7 @@
         #route2 {
             position: absolute;
             right: 30px;
-            top: calc(30% + 150px);
+            top: calc(13% + 150px);
             width: 20%;
             bottom: 5%;
             padding: 10px;
@@ -62,10 +62,10 @@
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
-            top: 10px; /* Adjust this value to control how far from the top you want it */
+            bottom: 10px; /* Adjust this value to control how far from the top you want it */
             width: 21%;
             height: 50px; /* Set your desired height */
-            padding: 1px 10px 10px 18px;
+            padding: 0px 10px 28px 10px;
             background-color: #4c7c8a;
             color: #FFFFFF; /* Change this to your desired text color */
             font-family: sans-serif;
@@ -99,9 +99,9 @@
         <b>Travel time to destination:</b> <br /> 95 minutes.
     </div>
 
-    <!-- Information about route 2 -->
+    <!-- Information about AI recommendation -->
     <div id="airecommendation">
-        <h3>AI recommendation: Route 2</h3>
+        <center><h3>AI recommendation: <br /> Route 2</h3></center>
     </div>
 
     <script>
@@ -117,8 +117,8 @@
         });
 
         const bounds = [
-            [-150.425744, 61.009454],
-            [-149.403794, 61.403349]
+            [-150.165744, 61.009454],
+            [-149.653794, 61.333349]
         ];
         map.setMaxBounds(bounds);
 
@@ -139,29 +139,38 @@
 
         let flag = 1;
 
-        // Function to add charging stations to the map
+        // Function to add charging stations to the map with labels matching the icon color
         function addChargingStations() {
-            chargingStations.forEach(station => {
+            chargingStations.forEach((station, index) => {
                 const el = document.createElement('div');
                 el.className = 'marker';
+                el.style.display = 'flex';
+                el.style.flexDirection = 'column';
+                el.style.alignItems = 'center';
+
+                // Define the color for the icon and label
+                const iconColor = index === 0 ? '#9A6B03' : '#000000'; // Brown for "Route 1", Black for "Route 2"
 
                 // Create an icon element
                 const icon = document.createElement('i');
                 icon.className = 'fa-solid fa-charging-station';
+                icon.style.fontSize = '40px'; // Adjust icon size
+                icon.style.color = iconColor; // Set icon color
                 el.appendChild(icon);
 
-                // Set the size of the icon (increase this value for larger icons)
-                icon.style.fontSize = '40px';  // Adjust to desired size
+                // Create a label element
+                const label = document.createElement('div');
+                label.innerText = `Route ${index + 1}`; // Set label text to "Route 1" and "Route 2"
+                label.style.fontSize = '14px';
+                label.style.color = '#ffffff'; // White text color for contrast
+                label.style.backgroundColor = iconColor; // Match the background color to the icon color
+                label.style.padding = '4px 8px';
+                label.style.borderRadius = '4px';
+                label.style.marginTop = '4px'; // Space between icon and label
+                label.style.textAlign = 'center';
+                el.appendChild(label);
 
-                // Alternate styles if desired
-                if (flag) {
-                    icon.style.color = '#9A6B03';  // Brown
-                    flag = 0;
-                } else {
-                    icon.style.color = '#000000';  // Black
-                    flag = 1;
-                }
-
+                // Add marker to the map
                 new mapboxgl.Marker({ element: el })
                     .setLngLat(station.coordinates)
                     .addTo(map);
